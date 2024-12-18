@@ -1,0 +1,17 @@
+[
+    {
+      "_id": "1",
+      "name": "Genshin Impact",
+      "description": "Game nhập vai thế giới mở.",
+      "image": "https://example.com/genshin.jpg",
+      "downloadLink": "https://example.com/genshin.apk"
+    },
+    {
+      "_id": "2",
+      "name": "PUBG Mobile",
+      "description": "Game bắn súng sinh tồn.",
+      "image": "https://example.com/pubg.jpg",
+      "downloadLink": "https://example.com/pubg.apk"
+    }
+  ]
+  
