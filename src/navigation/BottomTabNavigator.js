@@ -5,7 +5,9 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import HomeScreen from '../screens/HomeScreen';
 import DetailsScreen from '../screens/DetailsScreen';
-import LoginScreen from '../screens/LoginScreen';
+import LoginScreen from '../screens/auth/LoginScreen';
+import SignUpScreen from '../screens/auth/SignUpScreen';
+import { ForgotPassword, Verication } from '../screens';
 // import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
@@ -23,6 +25,9 @@ const HomeStack = () => (
 const LoginStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
+    <Stack.Screen name="SignUp" component={SignUpScreen} options={{ title: 'SignUp' }} />
+    <Stack.Screen name="Verication" component={Verication} />
+    <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
   </Stack.Navigator>
 );
 
