@@ -3,8 +3,10 @@ import React from 'react'
 import { createStackNavigator } from 'react-navigation-stack';
 import { ForgotPassword, LoginScreen, SignUpScreen, Verication } from '../screens';
 
+const Stack = createStackNavigator();
+
 const AuthNavigation = () => {
-    const Stack = createStackNavigator();
+    
     return (
         <Stack.Navigator
             screenOption={{

@@ -63,7 +63,7 @@ const ContainerComponent = ({
 
     return isImageBackground ? (
         <ImageBackground
-            source={require('../assets/images/login.png')}
+            source={require('../assets/images/splash-img.png')}
             style={{ flex: 1 }}
         >
             <SafeAreaView style={{ flex: 1 }}>
