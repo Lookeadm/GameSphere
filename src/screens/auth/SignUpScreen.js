@@ -11,6 +11,7 @@ import SocialLogin from './components/SocialLogin';
 import { LoadingModal } from '../../modals';
 import authenticationAPI from '../../apis/authApi';
 import { Validate } from '../../utils/validate';
+import { addAuth } from '../../redux/reducers/authReducer';
 
 const initValue = {
   username: '',
@@ -50,6 +51,8 @@ const SignUpScreen = ({ navigation }) => {
         setIsLoading(true);
         try {
           const res = await authenticationAPI.HandleAuthentication('/register', values, 'post')
+          dispatch(addAuth(res.data));
+          await AsyncStorage.setItem('auth', JSON.stringify(res.data))
           setIsLoading(false);
         } catch (error) {
           setIsLoading(false);

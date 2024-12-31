@@ -78,7 +78,7 @@ const LoginScreen = ({ navigation }) => {
       <SectionComponent>
         <RowComponent justify="center">
           <TextComponent text="Don't have an account?"/>
-          <ButtonComponent type="link" text="Sign up" onPress={()=>navigation.navigate('SignUp')}/>
+          <ButtonComponent type="link" text="Sign up" onPress={()=>navigation.navigate('SignUpScreen')}/>
         </RowComponent>
       </SectionComponent>
     </ContainerComponent>

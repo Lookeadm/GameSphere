@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
 
 const HomeScreen = ({navigation})=>{
     const [games, setGames] = useState([]);
+    const dispatch = useDispatch();
 
     useEffect(()=>{
         axios.get('https://www.freetogame.com/api/games')

@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import { createStackNavigator } from 'react-navigation-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import { ForgotPassword, LoginScreen, SignUpScreen, Verication } from '../screens';
 
 const Stack = createStackNavigator();
@@ -9,7 +9,7 @@ const AuthNavigation = () => {
     
     return (
         <Stack.Navigator
-            screenOption={{
+            screenOptions={{
                 headerShown: false,
             }}>
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
