@@ -8,6 +8,7 @@ import DetailsScreen from '../screens/DetailsScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
 import SignUpScreen from '../screens/auth/SignUpScreen';
 import { ForgotPassword, Verication } from '../screens';
+import ProfileScreen from '../screens/ProfileScreen';
 // import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
@@ -51,7 +52,7 @@ const BottomTabNavigator = () => {
       <Tab.Screen name="Home" component={HomeStack} options={{ headerShown: false }} />
       <Tab.Screen name="Login" component={LoginStack} options={{ headerShown: false }} />
       {/* Uncomment ProfileScreen when ready */}
-      {/* <Tab.Screen name="Profile" component={ProfileScreen} /> */}
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }}/>
     </Tab.Navigator>
   );
 };

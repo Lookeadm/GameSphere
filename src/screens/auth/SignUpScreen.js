@@ -24,7 +24,7 @@ const SignUpScreen = ({ navigation }) => {
 
   const [values, setValues] = useState(initValue);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState({});
 
   useEffect(()=>{
     if(values.email || values.password){
@@ -38,33 +38,59 @@ const SignUpScreen = ({ navigation }) => {
     setValues(data);
   };
 
-  const handleRegister = async () => {
-
-    const { email, password, confirmPassword } = values
-
-    const emailValidation = Validate.email(email)
-    const passwordValidation = Validate.Password(password)
-
-    if (email && password && confirmPassword) {
-      if(emailValidation && passwordValidation){
-        setErrorMessage('');
-        setIsLoading(true);
-        try {
-          const res = await authenticationAPI.HandleAuthentication('/register', values, 'post')
-          dispatch(addAuth(res.data));
-          await AsyncStorage.setItem('auth', JSON.stringify(res.data))
-          setIsLoading(false);
-        } catch (error) {
-          setIsLoading(false);
-        }
-      }else{
-        setErrorMessage('Invalid Email')
-      }
-    } else {
-      setErrorMessage('Please enter information')
+  const validateForm = () => {
+    const errors = {};
+    
+    if (!values.email) {
+      errors.email = 'Email is required';
+    } else if (!Validate.email(values.email)) {
+      errors.email = 'Invalid email format';
     }
 
-  }
+    if (!values.password) {
+      errors.password = 'Password is required';
+    } else if (!Validate.Password(values.password)) {
+      errors.password = 'Password must be at least 6 characters';
+    }
+
+    if (!values.confirmPassword) {
+      errors.confirmPassword = 'Please confirm password';
+    } else if (values.password !== values.confirmPassword) {
+      errors.confirmPassword = 'Passwords do not match';
+    }
+
+    if (!values.username) {
+      errors.username = 'Username is required';
+    }
+
+    return errors;
+  };
+
+  const handleRegister = async () => {
+    const errors = validateForm();
+    
+    if (Object.keys(errors).length > 0) {
+      setErrorMessage(errors);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const res = await authenticationAPI.HandleAuthentication('/register', values, 'post');
+      if(res.status === 200 || res.status === 201){
+        dispatch(addAuth(res.data));
+        await AsyncStorage.setItem('auth', JSON.stringify(res.data));
+        alert('Registration successful! Redirecting to login screen...');
+        navigation.navigate('LoginScreen');
+      }
+    } catch (error) {
+      setErrorMessage({
+        submit: error.response?.data?.message || 'Registration failed. Please try again.'
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
@@ -81,10 +107,12 @@ const SignUpScreen = ({ navigation }) => {
           />
           <InputComponent
             value={values.email}
-            placeholder="@abc@gamil.com"
+            placeholder="@abc@gmail.com"
             onChange={val => handleChangeValue('email', val)}
             allowClear
             affix={<Sms size={22} color={appColors.gray} />}
+            onEnd={()=>
+              setErrorMessage({ ...errorMessage, email: 'Email không hợp lệ' })}
           />
           <InputComponent
             value={values.password}
@@ -107,7 +135,13 @@ const SignUpScreen = ({ navigation }) => {
 
         {errorMessage && (
           <SectionComponent>
-            <TextComponent text={errorMessage} color={appColors.danger} />
+            {
+              Object.keys(errorMessage).map((error, index) => (
+              <TextComponent 
+                text={errorMessage[`${error}`]}
+                key={`error${index}`} 
+                color={appColors.danger} />
+            ))}
           </SectionComponent>
         )}
 
@@ -115,7 +149,9 @@ const SignUpScreen = ({ navigation }) => {
         <SectionComponent>
           <ButtonComponent onPress={handleRegister} text="SIGN UP" type='primary' />
         </SectionComponent>
+
         <SocialLogin />
+        
         <SectionComponent>
           <RowComponent justify="center">
             <TextComponent text="Don't have an account?" />

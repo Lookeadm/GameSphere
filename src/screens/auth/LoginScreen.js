@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Button, Image, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Button, Image, Text, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import InputComponent from '../../components/InputComponent';
 import { appColors } from '../../constants/appColors';
@@ -9,20 +9,51 @@ import { ContainerComponent, SectionComponent, TextComponent, RowComponent, Butt
 import { Switch } from 'react-native-gesture-handler';
 import SocialLogin from './components/SocialLogin';
 import authenticationAPI from '../../apis/authApi';
+import { Validate } from '../../utils/validate';
+import { useDispatch } from 'react-redux';
+import { addAuth } from '../../redux/reducers/authReducer';
 
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isRemember, setIsRemember] = useState(true);
+  const [isDisable, setIsDisable] = useState(true);
+
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    const emailValidation = Validate.email(email);
+    if(!email || !password || !emailValidation){
+      setIsDisable(true)
+    }else{
+      setIsDisable(false)
+    }
+  }, [email, password])
 
   const handleLogin = async () => {
-    try{
-      const res = await authenticationAPI.HandleAuthentication('/users');
-      console.log(res);
-    }catch(e){
 
+    const emailValidation = Validate.email(email);
+    if(emailValidation){
+      try{
+        const res = await authenticationAPI.HandleAuthentication(
+          '/login', 
+          {email, password},
+          'post',
+        );
+        dispatch(addAuth(res.data))
+        
+        await AsyncStorage.setItem(
+          'auth',
+          isRemember ? JSON.stringify(res.data):email,
+        );
+      }catch(e){
+  
+      }
+    }else{
+      alert('Email is not correct');
     }
+    
   }
 
   return (
@@ -72,7 +103,12 @@ const LoginScreen = ({ navigation }) => {
       </SectionComponent>
       <SpaceComponent height={16}/>
       <SectionComponent>
-        <ButtonComponent onPress={handleLogin} text="SIGN IN" type='primary' />
+        <ButtonComponent 
+          disable={isDisable}
+          onPress={handleLogin} 
+          text="SIGN IN" 
+          type='primary' 
+          />
       </SectionComponent>
       <SocialLogin />
       <SectionComponent>

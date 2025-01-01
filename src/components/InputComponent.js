@@ -18,6 +18,7 @@ const InputComponent = ({
     isPassword,
     allowClear,
     type,
+    onEnd
 }) => {
     const [isShowPass, setIsShowPass] = useState(isPassword ?? false);
 
@@ -33,6 +34,7 @@ const InputComponent = ({
                 placeholderTextColor={'#747688'}
                 keyboardType={type??'default'}
                 autoCapitalize='none'
+                onEndEditing={onEnd}
             />
             {suffix ?? suffix}
             <TouchableOpacity
