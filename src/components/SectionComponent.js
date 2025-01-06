@@ -3,11 +3,10 @@ import React from 'react'
 import { globalStyles } from '../styles/globalStyles'
 
 const SectionComponent = ({
-    children,
-    styles,
-
+  children,
+  styles,
 }) => {
-  return <View style = {[globalStyles.section, styles ]}>
+  return <View style={[globalStyles.section, styles]}>
       {children}
     </View>
 }

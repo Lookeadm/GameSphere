@@ -18,9 +18,16 @@ const ButtonComponent = ({
     onPress,
     iconFlex,
     type,
-    disable
+    disable,
+    borderColor,
+    border
 }) => {
-    return type === 'primary' ? (
+    const getBackgroundColor = () => {
+        if (color) return color;
+        if (disable) return appColors.gray4;
+        return appColors.primary;
+    }
+    const PrimaryButton = () => (
         <View style={{ alignItems: 'center' }}>
             <TouchableOpacity
                 onPress={onPress}
@@ -28,16 +35,14 @@ const ButtonComponent = ({
                     globalStyles.button,
                     globalStyles.shadow,
                     {
-                        backgroundColor: color
-                        ? color
-                        : disable
-                        ? appColors.gray4
-                        : appColors.primary,
+                        backgroundColor: getBackgroundColor(),
                         marginBottom: 17,
                         width: '90%',
+                        borderColor: borderColor,
                     },
-                    styles,]}>
-                {icon && iconFlex === 'left' && icon }
+                    styles,
+                ]}>
+                {icon && iconFlex === 'left' && icon}
                 <TextComponent
                     text={text}
                     color={textColor ?? appColors.white}
@@ -55,14 +60,32 @@ const ButtonComponent = ({
                 {icon && iconFlex === 'right' && icon}
             </TouchableOpacity>
         </View>
-    ) : (
-        <TouchableOpacity onPress={onPress}>
+    )
+    
+    const SecondaryButton = () => (
+        <TouchableOpacity
+            style={[
+                globalStyles.downloadButton,
+                {
+                    backgroundColor: 'transparent',
+                    borderColor: color || appColors.green,
+                    borderWidth: border ? 2 : 0,
+                },
+                styles,
+            ]}
+            onPress={onPress}>
             <TextComponent
                 flex={0}
                 text={text}
-                color={type === 'link' ? appColors.primary : appColors.text} />
+                color={textColor}
+                font={textFont}
+            />
         </TouchableOpacity>
     )
+    
+    // Main return
+    return type === 'primary' ? <PrimaryButton /> : <SecondaryButton />
+
 }
 
 ButtonComponent.propTypes = {
@@ -77,6 +100,8 @@ ButtonComponent.propTypes = {
     onPress: PropTypes.func, // Hàm được gọi khi nhấn
     iconFlex: PropTypes.oneOf(['right', 'left']), // Chỉ nhận giá trị 'right' hoặc 'left'
     disable: PropTypes.bool,
+    borderColor: PropTypes.string,
+    border: PropTypes.bool
 }
 
 export default ButtonComponent

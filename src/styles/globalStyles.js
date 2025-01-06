@@ -25,14 +25,27 @@ export const globalStyles = StyleSheet.create({
         minHeight: 56,
         flexDirection: 'row'
     },
+    downloadButton: {
+        borderRadius: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 38,
+        width: 94,
+        flexDirection: 'row',
+    },
     section: {
         paddingHorizontal: 16,
-        paddingBottom: 20,
+        paddingBottom: 10,
+        
     },
     row: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center'
+    },
+    column:{
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
     },
     shadow: {
         shadowColor: 'rgba(0,0,0,0.5)',
@@ -43,5 +56,11 @@ export const globalStyles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 8,
         elevation: 6
-    }
+    },
+    divider: {
+        height: 1,
+        backgroundColor: appColors.white,
+        opacity: 0.1,
+        width: '100%',
+    },
 })

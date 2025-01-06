@@ -6,6 +6,11 @@ import { fontFamilies } from '../../../constants/fontFamilies'
 import { Facebook, Google } from '../../../assets/svgs'
 
 const SocialLogin = () => {
+
+    const handleLoginGoogle = async () =>{
+    
+    }
+
     return (
         <SectionComponent>
             <TextComponent

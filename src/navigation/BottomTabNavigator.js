@@ -16,9 +16,13 @@ const Stack = createStackNavigator();
 
 // Home stack
 const HomeStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Game Store' }} />
-    <Stack.Screen name="Details" component={DetailsScreen} options={{ title: 'Chi tiết game' }} />
+  <Stack.Navigator
+      screenOptions={{
+        headerShown: false 
+      }}
+    >
+    <Stack.Screen name="Home" component={HomeScreen}/>
+    <Stack.Screen name="Details" component={DetailsScreen}/>
   </Stack.Navigator>
 );
 
@@ -47,11 +51,11 @@ const BottomTabNavigator = () => {
         },
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
+        
       })}
     >
       <Tab.Screen name="Home" component={HomeStack} options={{ headerShown: false }} />
       <Tab.Screen name="Login" component={LoginStack} options={{ headerShown: false }} />
-      {/* Uncomment ProfileScreen when ready */}
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }}/>
     </Tab.Navigator>
   );
