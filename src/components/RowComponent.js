@@ -19,7 +19,7 @@ const RowComponent = ({
             {children}
         </TouchableOpacity>
     ) : (
-        <View style={localStyle}>
+        <View style={[localStyle]}>
             {children}
         </View>
     )

@@ -7,7 +7,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 const CategoryComponent = ({ 
     iconName, 
-    categoryName 
+    categoryName,
+    styles,
+    sizeIcon,
+    sizeText
 }) => {
     return (
         <ColumnComponent 
@@ -18,13 +21,13 @@ const CategoryComponent = ({
         >
             <FontAwesomeIcon
                 icon={iconName} 
-                size={34} 
+                size={sizeIcon} 
                 color={appColors.white}
             />
             <TextComponent 
                 text={categoryName} 
                 color={appColors.white} 
-                size={14}  
+                size={sizeText}  
             />
         </ColumnComponent>
     );

@@ -8,6 +8,8 @@ import ColumnComponent from "./ColumnComponent"
 import SearchComponent from "./SearchInputComponent";
 import SeparatorComponent from "./SeparatorComponent";
 import InputComponent from "./InputComponent";
+import DividerComponent from "./DividerComponent";
+import HeaderComponent from "./HeaderComponent";
 
 export{
     SectionComponent,
@@ -19,5 +21,7 @@ export{
     ColumnComponent,
     SearchComponent,
     SeparatorComponent,
-    InputComponent
+    InputComponent,
+    DividerComponent,
+    HeaderComponent,
 };

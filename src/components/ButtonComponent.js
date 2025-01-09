@@ -20,7 +20,8 @@ const ButtonComponent = ({
     type,
     disable,
     borderColor,
-    border
+    border,
+    textWeigth
 }) => {
     const getBackgroundColor = () => {
         if (color) return color;
@@ -67,9 +68,10 @@ const ButtonComponent = ({
             style={[
                 globalStyles.downloadButton,
                 {
-                    backgroundColor: 'transparent',
+                    backgroundColor: color ? color : 'transparent',
                     borderColor: color || appColors.green,
                     borderWidth: border ? 2 : 0,
+                    
                 },
                 styles,
             ]}
@@ -79,6 +81,7 @@ const ButtonComponent = ({
                 text={text}
                 color={textColor}
                 font={textFont}
+                fontWeight={textWeigth}
             />
         </TouchableOpacity>
     )

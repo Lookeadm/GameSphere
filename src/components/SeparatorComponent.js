@@ -7,8 +7,12 @@ const SeparatorComponent = () => {
   return (
     <View>
       <TextComponent 
-        text=' • '
+        text='•'
         color={appColors.gray6}
+        styles={{
+          marginLeft: 5,
+          marginRight: 5,
+        }} 
         size={10}
     />
     </View>

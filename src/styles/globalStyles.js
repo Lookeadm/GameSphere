@@ -1,15 +1,13 @@
 import { StyleSheet } from "react-native";
 import { appColors } from "../constants/appColors";
 import { shadow } from "react-native-paper";
-// import { fontFamilies } from "";
 
 export const globalStyles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: appColors.white,
+        backgroundColor: appColors.black,
         alignItems: 'center', 
-        justifyContent: 'center', 
-        padding: 20
+        justifyContent: 'center',
     },
     text:{
         fontSize: 14,
@@ -35,7 +33,7 @@ export const globalStyles = StyleSheet.create({
     },
     section: {
         paddingHorizontal: 16,
-        paddingBottom: 10,
+        paddingBottom: 15,
         
     },
     row: {
@@ -62,5 +60,6 @@ export const globalStyles = StyleSheet.create({
         backgroundColor: appColors.white,
         opacity: 0.1,
         width: '100%',
+        marginBottom: 15,
     },
 })

@@ -43,6 +43,7 @@ const AppItemComponent = ({
             border
         />
       </SectionComponent>
+      
     </View>
     </>
   )
