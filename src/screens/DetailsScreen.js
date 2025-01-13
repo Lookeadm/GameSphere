@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, Button } from 'react-native';
+import { View, Text, StyleSheet, Image, Button, ProgressBarAndroid, ProgressBarAndroidBase } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import { ButtonComponent, ColumnComponent, ContainerComponent, DividerComponent, HeaderComponent, RowComponent, SectionComponent, SeparatorComponent, SpaceComponent, TextComponent } from '../components';
 import { appColors } from '../constants/appColors';
 import config from '../apis/config';
 import { faBookmark, faStar, faArrowUpRightFromSquare, faApple, faAndroid } from '@fortawesome/free-solid-svg-icons';
 import CategoryItem from '../components/CategoriesComponent'
-import {RatingComponent, ScreenshotComponent, UserRatingComponent} from './details/index';
+import { DownloadComponent, RatingComponent, ScreenshotComponent, UserRatingComponent } from './details/index';
+
 
 const apiKey = config.API_KEY;
 const urlGame = config.API_URL;
@@ -14,6 +15,8 @@ const urlGame = config.API_URL;
 const DetailsScreen = ({ route }) => {
     const { game } = route.params;
     const [details, setDetails] = useState([]);
+    const [progress, setProgress] = useState(0);
+    const [isPaused, setIsPaused] = useState(false);
     const gameId = game.id;
     const urlDev = `${urlGame}/${gameId}?key=${apiKey}`;
     const genres = () => {
@@ -74,16 +77,35 @@ const DetailsScreen = ({ route }) => {
     }
 
     const handleDownload = async () => {
-        const uri = game.downloadLink;
-        const fileUri = `${FileSystem.documentDirectory}${game.name}.apk`;
+        const uri = 'https://dw.uptodown.net/dwn/-0nWzQe3EtXCaSnQMxRr3V0-slrfB-m4R8FjbP5Jp2eUX7SvZrXEev2HggrvRe35V8WnNoUXkw5dOFKbmzIDAewS6diX1GQ2aPClDjMzh-pd6rP-sa9KM2OS8A29QPu-/ZCyXPFt4XRNhBnFZdfHdFyWU6-lGLLVcxaFIiAy0x5R3_QZgHMJGu_Yhht7RRhfhuRKNUm5ik5DG59xZ4QHcRWg29XfnJNqTFF3Xtd3jLy3o9Zaa-Z43FERgzvZLEwgp/v-xJ_MFvobTU3PMzpJK1mumbOw5fkH6LuRjG_YnnDSVB0vQ9BFBb2nx9Bd6QRSvjB5elt6y_CUPHh_A3HJdNx8pKNBuoQ7aF0ajcyjO4MPKU-2pIEJQuky7GBVhHSujy/genshin-impact-5-3-0-29183395-29332470.apk';
+
+        const fileUri = `${FileSystem.documentDirectory}.apk`;
+
+        const callback = (downloadProgress) => {
+            const progress =
+                downloadProgress.totalBytesExpectedToWrite > 0 ? // Kiểm tra xem tổng số byte có lớn hơn 0 không
+                    downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite : 0; // Tính toán tiến trình
+            setProgress(progress);
+
+        };
 
         try {
-            const { uri: downloadedFileUri } = await FileSystem.downloadAsync(uri, fileUri);
+            const downloadResumable = FileSystem.createDownloadResumable(uri, fileUri, {}, callback);
+            const { uri: downloadedFileUri } = await downloadResumable.downloadAsync();
             alert(`Tệp đã được tải về: ${downloadedFileUri}`);
         } catch (error) {
             console.error(error);
             alert('Tải xuống thất bại!');
         }
+    };
+
+    const handlePauseResume = async () => {
+    if (isPaused) {
+        await downloadResumable.resumeAsync();
+    } else {
+        await downloadResumable.pauseAsync();
+    }
+    setIsPaused(prev => !prev); // Sử dụng hàm callback để cập nhật trạng thái
     };
 
     return (
@@ -94,7 +116,7 @@ const DetailsScreen = ({ route }) => {
                 back
                 detail
             >
-                <ScreenshotComponent images={screenshort()}/>
+                <ScreenshotComponent images={screenshort()} />
                 <SpaceComponent height={15} />
                 <SectionComponent>
                     <RowComponent
@@ -140,28 +162,7 @@ const DetailsScreen = ({ route }) => {
                 </SectionComponent>
                 <DividerComponent />
                 <SectionComponent>
-                    <ButtonComponent
-                        text="Download"
-                        textColor={appColors.black}
-                        textWeigth='bold'
-                        borderColor={appColors.green}
-                        color={appColors.green}
-                        border
-                        styles={{
-                            width: '100%',
-                            borderRadius: 20
-                        }}
-                    />
-                    <SpaceComponent height={10} />
-                    <ButtonComponent
-                        text="Download"
-                        textColor={appColors.green}
-                        borderColor={appColors.green}
-                        border
-                        styles={{
-                            width: '100%'
-                        }}
-                    />
+                    <DownloadComponent/>
                 </SectionComponent>
 
                 <SectionComponent>
@@ -197,19 +198,12 @@ const DetailsScreen = ({ route }) => {
                             text='My Rating'
                             color={appColors.white}
                         />
-                        <UserRatingComponent/>
+                        <UserRatingComponent />
                     </RowComponent>
                 </SectionComponent>
             </ContainerComponent>
         </>
     );
 };
-
-const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20 },
-    image: { width: '100%', height: 200, borderRadius: 10 },
-    title: { fontSize: 20, fontWeight: 'bold', marginVertical: 10 },
-    description: { fontSize: 16, color: '#666', marginBottom: 20 },
-});
 
 export default DetailsScreen;

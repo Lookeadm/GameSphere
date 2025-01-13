@@ -6,7 +6,6 @@ import { fontFamilies } from '../constants/fontFamilies'
 import { globalStyles } from '../styles/globalStyles'
 import PropTypes from 'prop-types'
 
-
 const ButtonComponent = ({
     icon,
     text,

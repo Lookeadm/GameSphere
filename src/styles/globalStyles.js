@@ -1,6 +1,5 @@
 import { StyleSheet } from "react-native";
 import { appColors } from "../constants/appColors";
-import { shadow } from "react-native-paper";
 
 export const globalStyles = StyleSheet.create({
     container: {
