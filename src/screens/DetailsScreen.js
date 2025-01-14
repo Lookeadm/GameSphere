@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, Button, ProgressBarAndroid, ProgressBarAndroidBase } from 'react-native';
+import { View, Image, } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import { ButtonComponent, ColumnComponent, ContainerComponent, DividerComponent, HeaderComponent, RowComponent, SectionComponent, SeparatorComponent, SpaceComponent, TextComponent } from '../components';
 import { appColors } from '../constants/appColors';
 import config from '../apis/config';
-import { faBookmark, faStar, faArrowUpRightFromSquare, faApple, faAndroid } from '@fortawesome/free-solid-svg-icons';
+import { faBookmark, faStar, faArrowUpRightFromSquare,  } from '@fortawesome/free-solid-svg-icons';
 import CategoryItem from '../components/CategoriesComponent'
 import { DownloadComponent, RatingComponent, ScreenshotComponent, UserRatingComponent } from './details/index';
 

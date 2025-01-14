@@ -1,84 +1,118 @@
-import React,  {useState} from 'react';
-import { View } from 'react-native';
-
+import React, { useState } from 'react';
+import { View, Text, ActivityIndicator } from 'react-native';
+import * as FileSystem from 'expo-file-system';
 import { appColors } from '../../constants/appColors';
 import { ButtonComponent, SpaceComponent, TextComponent } from '../../components';
+import { ProgressBar } from 'react-native-paper';
 
 const DownloadButton = () => {
+    const [isLoading, setIsLoading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
+    const [downloadResumable, setDownloadResumable] = useState(null);
+
 
     const handleDownload = async () => {
-        const uri = 'https://dw.uptodown.net/dwn/-0nWzQe3EtXCaSnQMxRr3V0-slrfB-m4R8FjbP5Jp2eUX7SvZrXEev2HggrvRe35V8WnNoUXkw5dOFKbmzIDAewS6diX1GQ2aPClDjMzh-pd6rP-sa9KM2OS8A29QPu-/ZCyXPFt4XRNhBnFZdfHdFyWU6-lGLLVcxaFIiAy0x5R3_QZgHMJGu_Yhht7RRhfhuRKNUm5ik5DG59xZ4QHcRWg29XfnJNqTFF3Xtd3jLy3o9Zaa-Z43FERgzvZLEwgp/v-xJ_MFvobTU3PMzpJK1mumbOw5fkH6LuRjG_YnnDSVB0vQ9BFBb2nx9Bd6QRSvjB5elt6y_CUPHh_A3HJdNx8pKNBuoQ7aF0ajcyjO4MPKU-2pIEJQuky7GBVhHSujy/genshin-impact-5-3-0-29183395-29332470.apk';
+        setIsLoading(true);
+        const uri = 'https://d-e02.winudf.com/b/XAPK/Y29tLm5ldG1hcmJsZS5zb2xvbHZfMTg5X2NkOTkwMmEz?_fn=U29sbyBMZXZlbGluZzpBcmlzZV8xLjIuMDVfQVBLUHVyZS54YXBr&_p=Y29tLm5ldG1hcmJsZS5zb2xvbHY%3D&download_id=otr_1610505076665999&is_hot=true&k=c6a29d4d6887dc639189242a3f98edd867873333&uu=https%3A%2F%2Fd-14.winudf.com%2Fb%2FXAPK%2FY29tLm5ldG1hcmJsZS5zb2xvbHZfMTg5X2NkOTkwMmEz%3Fk%3D9605d1cb5b400e118d17e839af23bd5767873333';
 
         const fileUri = `${FileSystem.documentDirectory}.apk`;
 
         const callback = (downloadProgress) => {
-            const progress =
+            const progressDownload =
                 downloadProgress.totalBytesExpectedToWrite > 0 ? // Kiểm tra xem tổng số byte có lớn hơn 0 không
-                    downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite : 0; // Tính toán tiến trình
-            setProgress(progress);
-
+                    (downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite) * 100 : 0; // Tính toán tiến trình
+            setProgress(Math.min(progressDownload, 100));
+            setIsLoading(false);
         };
 
         try {
-            const downloadResumable = FileSystem.createDownloadResumable(uri, fileUri, {}, callback);
-            const { uri: downloadedFileUri } = await downloadResumable.downloadAsync();
-            alert(`Tệp đã được tải về: ${downloadedFileUri}`);
+            const resumable = FileSystem.createDownloadResumable(uri, fileUri, {}, callback);
+            setDownloadResumable(resumable); // Lưu `resumable` vào state để sử dụng lại
+
+            await resumable.downloadAsync();
+
         } catch (error) {
-            console.error(error);
-            alert('Tải xuống thất bại!');
+            console.error('Lỗi trong quá trình tải xuống:', error);
         }
     };
 
     const handlePauseResume = async () => {
+        if (!downloadResumable) return;
+
         if (isPaused) {
             await downloadResumable.resumeAsync();
         } else {
             await downloadResumable.pauseAsync();
         }
-        setIsPaused(prev => !prev); // Sử dụng hàm callback để cập nhật trạng thái
+        setIsPaused((prev) => !prev);
     };
+
+    const handleCancel = async () => {
+        if (downloadResumable) {
+            try {
+                await downloadResumable.cancelAsync();
+                setProgress(0);
+                setDownloadResumable(null);
+            } catch (error) {
+                console.error('Lỗi khi hủy tải:', error);
+            }
+        }
+    };
+
     return (
         <View>
+            {progress <= 0 ? (
+                <ButtonComponent
+                    text="Download"
+                    textColor={appColors.black}
+                    textWeigth='bold'
+                    borderColor={appColors.green}
+                    color={appColors.green}
+                    border
+                    styles={{
+                        width: '100%',
+                        borderRadius: 10
+                    }}
+                    onPress={handleDownload}
+                />
+            ) : isLoading ? (
+                <ActivityIndicator size="large" color={appColors.green} />
+            ) : (
+                <View style={{ width: '100%' }}>
+                    <ProgressBar
+                        progress={Math.round(progress) / 100}
+                        color={appColors.green}
+                        style={{
+                            height: 35,
+                            borderRadius: 10
+                        }}
+                    />
+                    <Text style={{ color: appColors.green }}>{Math.round(progress)}%</Text>
+                    <ButtonComponent
+                        text="Hủy tải"
+                        textColor={appColors.danger}
+                        borderColor={appColors.danger}
+                        border
+                        styles={{
+                            width: '100%',
+                            borderRadius: 10,
+                        }}
+                        onPress={handleCancel}
+                    />
+                </View>
+            )}
+
+            <SpaceComponent height={10} />
+
             <ButtonComponent
                 text="Download"
-                textColor={appColors.black}
-                textWeigth='bold'
+                textColor={appColors.green}
                 borderColor={appColors.green}
-                color={appColors.green}
                 border
                 styles={{
                     width: '100%',
-                    borderRadius: 20
-                }}
-                onPress={handleDownload}
-            />
-            <SpaceComponent height={10} />
-            {progress > 0 && (
-                <View style={{ marginTop: 20, width: '100%' }}>
-                    <Text>Tiến trình: {Math.round(progress * 100)}%</Text>
-                </View>
-            )}
-            <SpaceComponent height={10} />
-            <ButtonComponent
-                text={isPaused ? "Tiếp tục tải" : "Tạm dừng tải"}
-                textColor={appColors.green}
-                borderColor={appColors.green}
-                border
-                styles={{
-                    width: '100%'
-                }}
-                onPress={handlePauseResume}
-            />
-            <SpaceComponent height={10} />
-            <ButtonComponent
-                text="Download"
-                textColor={appColors.green}
-                borderColor={appColors.green}
-                border
-                styles={{
-                    width: '100%'
+                    orderRadius: 10,
                 }}
             />
         </View>
