@@ -11,19 +11,28 @@ const DownloadButton = () => {
     const [isPaused, setIsPaused] = useState(false);
     const [downloadResumable, setDownloadResumable] = useState(null);
 
-
     const handleDownload = async () => {
         setIsLoading(true);
-        const uri = 'https://d-e02.winudf.com/b/XAPK/Y29tLm5ldG1hcmJsZS5zb2xvbHZfMTg5X2NkOTkwMmEz?_fn=U29sbyBMZXZlbGluZzpBcmlzZV8xLjIuMDVfQVBLUHVyZS54YXBr&_p=Y29tLm5ldG1hcmJsZS5zb2xvbHY%3D&download_id=otr_1610505076665999&is_hot=true&k=c6a29d4d6887dc639189242a3f98edd867873333&uu=https%3A%2F%2Fd-14.winudf.com%2Fb%2FXAPK%2FY29tLm5ldG1hcmJsZS5zb2xvbHZfMTg5X2NkOTkwMmEz%3Fk%3D9605d1cb5b400e118d17e839af23bd5767873333';
+        const uri = 'https://apk.nestvui.com/BANDISHARE/TikTok_MOD/TikTok_v38.1.1_MOD_BANDISHARE.apk';
 
         const fileUri = `${FileSystem.documentDirectory}.apk`;
 
+        let previousProgress = -1
+
         const callback = (downloadProgress) => {
-            const progressDownload =
-                downloadProgress.totalBytesExpectedToWrite > 0 ? // Kiểm tra xem tổng số byte có lớn hơn 0 không
-                    (downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite) * 100 : 0; // Tính toán tiến trình
-            setProgress(Math.min(progressDownload, 100));
+            const progressDownload = downloadProgress.totalBytesExpectedToWrite > 0
+                ? Math.min((downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite) * 100, 100)
+                : 0;
+
+            const roundedProgress = Math.round(progressDownload * 100) / 100; // Làm tròn đến 2 chữ số thập phân
+            setProgress(roundedProgress / 100); // Chuyển đổi về dạng phần trăm
+            
             setIsLoading(false);
+
+            if (roundedProgress !== previousProgress * 100) { // Kiểm tra tiến trình có thay đổi không
+                console.log(roundedProgress / 100);  // Log giá trị tiến trình đã làm tròn và chia cho 100
+                previousProgress = roundedProgress / 100; // Cập nhật giá trị tiến trình trước đó
+            }
         };
 
         try {
@@ -31,6 +40,7 @@ const DownloadButton = () => {
             setDownloadResumable(resumable); // Lưu `resumable` vào state để sử dụng lại
 
             await resumable.downloadAsync();
+
 
         } catch (error) {
             console.error('Lỗi trong quá trình tải xuống:', error);
@@ -49,15 +59,14 @@ const DownloadButton = () => {
     };
 
     const handleCancel = async () => {
-        if (downloadResumable) {
             try {
                 await downloadResumable.cancelAsync();
                 setProgress(0);
                 setDownloadResumable(null);
+                console.log('Hủy tải thành công');
             } catch (error) {
                 console.error('Lỗi khi hủy tải:', error);
             }
-        }
     };
 
     return (
@@ -81,14 +90,14 @@ const DownloadButton = () => {
             ) : (
                 <View style={{ width: '100%' }}>
                     <ProgressBar
-                        progress={Math.round(progress) / 100}
+                        progress={parseFloat(Math.round(progress*100)/100)} 
                         color={appColors.green}
                         style={{
                             height: 35,
                             borderRadius: 10
                         }}
                     />
-                    <Text style={{ color: appColors.green }}>{Math.round(progress)}%</Text>
+                    <Text style={{ color: appColors.green }}>{(progress)*100}%</Text>
                     <ButtonComponent
                         text="Hủy tải"
                         textColor={appColors.danger}

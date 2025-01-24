@@ -9,6 +9,8 @@ import LoginScreen from '../screens/auth/LoginScreen';
 import SignUpScreen from '../screens/auth/SignUpScreen';
 import { ForgotPassword, Verication } from '../screens';
 import ProfileScreen from '../screens/ProfileScreen';
+import NavigationComponent from '../screens/home/NavigationComponent';
+import FileInstall from '../screens/profile/FileInstall';
 // import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
@@ -23,16 +25,8 @@ const HomeStack = () => (
     >
     <Stack.Screen name="Home" component={HomeScreen}/>
     <Stack.Screen name="Details" component={DetailsScreen}/>
-  </Stack.Navigator>
-);
-
-// Login stack
-const LoginStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
-    <Stack.Screen name="SignUp" component={SignUpScreen} options={{ title: 'SignUp' }} />
-    <Stack.Screen name="Verication" component={Verication} />
-    <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+    <Stack.Screen name="Header" component={NavigationComponent}/>
+    {/* <Stack.Screen name="Download" component={FileInstall}/> */}
   </Stack.Navigator>
 );
 
@@ -46,6 +40,7 @@ const BottomTabNavigator = () => {
             Home: focused ? 'home' : 'home-outline',
             Login: focused ? 'log-in' : 'log-in-outline',
             Profile: focused ? 'person' : 'person-outline',
+            // Download: focused ? 'download' : 'download-outline',
           };
           return <Ionicons name={icons[route.name]} size={size} color={color} />;
         },
@@ -55,8 +50,9 @@ const BottomTabNavigator = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeStack} options={{ headerShown: false }} />
-      <Tab.Screen name="Login" component={LoginStack} options={{ headerShown: false }} />
+      <Tab.Screen name="Header" component={NavigationComponent} options={{ headerShown: false }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }}/>
+      {/* <Tab.Screen name="Download" component={FileInstall} options={{ headerShown: false }}/> */}
     </Tab.Navigator>
   );
 };

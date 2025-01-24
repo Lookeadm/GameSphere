@@ -61,4 +61,19 @@ export const globalStyles = StyleSheet.create({
         width: '100%',
         marginBottom: 15,
     },
+    searchContainer: {
+        flexDirection: 'row',
+        borderRadius: 18,
+        borderColor: appColors.gray3,
+        width: 330,
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        backgroundColor: '#2A2A2A',
+        height: 35,
+    },
+    input: {
+        flex: 1,
+        color: '#787878',
+        fontSize: 14,  // Giảm kích thước font
+    }
 })
